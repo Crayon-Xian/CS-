@@ -1,0 +1,115 @@
+8
+#两个大于1的正数相除
+in R1		#被除数a
+movi 1
+add R1,R0
+movi 0
+movb R0,R1	#被除数a存放到内存0000 0000
+in R1		#除数b
+movi 1
+movb R0,R1	#除数b存放在内存0000 0001
+		#结果c存放在内存0000 0010
+		#余数d存放在内存0000 0011
+		#符号位判断值存放在 0000 0100
+		#b的绝对值B存在 0000 0101
+#确定符号位
+movi 4
+movc R2,R0
+movi 0		
+movc R1,R0	#取出a
+sub R1,R0	#判断a是正还是负
+movd 		
+movi 6		
+add R3,R0	
+jg		
+movi 1		
+add R2,R0	
+movi 4		
+movb R0,R2	
+
+movi 4
+movc R1,R0
+movi 1		
+movc R2,R0	
+movi 0		
+sub R2,R0	
+movd 		
+movi 6		
+add R3,R0	
+jg		
+movi -1	#
+add R1,R0	
+movi 4		
+movb R0,R1	
+
+
+
+#绝对值操作
+movi 1
+movc R1,R0
+movi 0
+sub R0,R1
+movd
+movi 10
+add R3,R0
+jg
+
+movi 5
+movb R0,R1
+movd
+movi 21
+add R3,R0
+jmp 
+
+#循环
+movi 5
+movc R2,R0
+movi 1
+add R1,R0
+add R2,R0
+movi 5
+movb R0,R2	#存b的绝对值
+movi -1
+sub R1,R0	#如果b值为负数，继续进行绝对值操作
+movd
+movi 8
+add R3,R0
+jg
+movd
+movi -13
+add R3,R0
+jmp
+
+
+#开始循环
+movi 5		
+movc R1,R0	#从内存中取出值B
+movi 0		#R0中设置为0，即内存地址0
+movc R2,R0	#取出a值
+sub R2,R1	#做减法
+movb R0,R2	#存回a
+movi 2		#R0中设置为2，即内存地址0000 0010
+movc R1,R0	#取出结果
+add R1,G 
+movb R0,R1	#将结果存回去
+movd       	#保存当前的PC值到R3
+movi -10     	#R0的值设置为-10
+add R3,R0  	#R3的值加-10
+jg	    	#如果设置G为1,就跳转
+#循环结束
+movi 4		
+movc R1,R0	#取出符号位，如果符号位为0，则商为正，若为+1/-1，则商为负
+out R1		#打印结果
+movi 2
+movc R2,R0
+out R2		#表示商
+movi 0
+movc R1,R0
+movi 1
+sub R1,R0
+movi 5
+movc R2,R0
+add R1,R2
+out R1		#表示余数
+halt
+

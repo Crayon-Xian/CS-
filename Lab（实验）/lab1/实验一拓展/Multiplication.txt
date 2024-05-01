@@ -1,0 +1,69 @@
+8
+#输入a b
+in R1		#输入乘数a
+movb R0,R1	#乘数a存放到内存0000 0000
+in R1		#输入被乘数b
+movi 1		#设定被乘数b的存放地址
+movb R0,R1	#被乘数b存放到内存0000 0001
+
+#设定内存0000 0010用于存放加法后的结果 即x
+#设定内存0000 0011用于存放加法溢出次数 即n
+
+#b=0时直接跳转到结果输出
+sub R0,R1
+movd
+movi 27
+add R3,R0
+jg
+
+#下面循环b次加法
+movi 1		#设定R0为b的地址
+movc R1,R0	#取出b
+sub R1,R0	#b--
+movb R0,R1	#将b保存回内存0000 0001
+movi 0		#设定R0为a的地址
+movc R1,R0	#取出a
+movi 2		#设定R0为x的地址
+movc R2,R0	#取出x
+add R2,R1	#a + x -> R2
+movb R0,R2	#存放a
+#判断加法是否溢出
+sub R1,R2	#将a减去x，如果a比x大，则表示溢出，此时设置G值为1
+movd		#准备跳转
+movi 19
+add R3,R0
+jg		#跳转到溢出处理
+movi 1		#设定R0为b的地址
+movc R1,R0	#取出b到R1
+movi 0
+sub R1,R0	#根据b是否大于0设定g值
+movd
+movi -19
+add R3,R0
+jg		#如果b>0则跳转到加法循环开头
+#循环结束 输出结果
+movi 3
+movc R2,R0	#取出n
+out R2		#输出n
+movi 2
+movc R2,R0	#取出x
+out R2		#输出x
+halt
+
+#溢出时的情况: x+=128变为正数 n++
+movi 127	#设定R0为127
+add R2,R0	#x+=127	
+movi 1		#设定R0为1
+add R2,R0	#x+=1
+movi 2		#设定R0为x的地址
+movb R0,R2	#将x保存回内存0000 0010
+movi 3		#设定R0为n的地址
+movc R2,R0	#取出n
+movi 1		#设定R0为1
+add R2,R0	#n++
+movi 3		#设定R0为n的地址
+movb R0,R2	#将n保存回内存0000 0011
+movd		#准备跳转
+movi -27
+add R3,R0	
+jmp		#溢出处理完毕 跳转回加法循环
